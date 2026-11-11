@@ -1,0 +1,16 @@
+import {Window} from 'happy-dom';
+import {readFileSync} from 'node:fs';
+import assert from 'node:assert/strict';
+import {parseSRT,createStudio} from '../widget/studio.js';
+assert.equal(parseSRT('1\n00:00:00,500 --> 00:00:02,000\nHello <b>Frame</b>')[0].text,'Hello Frame');
+assert.throws(()=>parseSRT('1\n00:00:02,000 --> 00:00:01,000\nInvalid'),/end/);
+const w=new Window();w.document.write(readFileSync(new URL('../widget/editor.html',import.meta.url),'utf8'));
+for(const key of ['document','window','Image','Option'])globalThis[key]=w[key];globalThis.requestAnimationFrame=()=>0;
+let doc={project_id:'a'.repeat(32),version:1,name:'Footage',duration:4,audio:true,clips:[{id:'c',start:0,end:4}],assets:[]},result=false;
+const calls=[];const $=id=>document.getElementById(id);
+const ui=createStudio({app:{},video:$('video'),getDoc:()=>doc,isResult:()=>result,getTime:()=>.5,seek:()=>{},canEdit:()=>true,command:async(name,args)=>{calls.push({name,args});doc={...doc,version:doc.version+1,studio:structuredClone(args.studio)};ui.render();return doc},toOriginal:async()=>{result=false},rpc:()=>{},data:r=>r,say:()=>{},accept:next=>doc=next});
+ui.render();$('captionText').value='A visible title';$('captionStart').value=.5;$('captionEnd').value=2;
+await $('captionForm').onsubmit({preventDefault(){}});assert.equal(calls[0].name,'set_studio');assert.equal(doc.studio.captions[0].text,'A visible title');assert.equal(document.querySelectorAll('.studio-lane button').length,1);
+$('studioFit').value='cover';$('studioApply').onclick();await new Promise(r=>setTimeout(r,0));assert.equal(doc.studio.fit,'cover');assert.equal(doc.studio.captions.length,1);
+const remove=document.querySelector('#studioItems button:last-child');remove.onclick();await new Promise(r=>setTimeout(r,0));assert.equal(doc.studio.captions.length,0);
+console.log('PASS: SRT timing validation, studio caption save/remove, layer track rendering, and framing changes preserve captions.');await w.happyDOM.abort();

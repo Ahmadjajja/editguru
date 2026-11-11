@@ -1,0 +1,19 @@
+{
+  "title": "FRAME demo — Fable 5.2 launch reel",
+  "intro": {
+    "eyebrow": "FRAME · edit with agents",
+    "headline": "You'll never spend hours editing a video again.",
+    "body": "Most people never start making content because production takes forever, and the worst part by far is the editing. FRAME hands it to an agent swarm: it goes through your footage, makes the edits, and leaves you with a video you'd be proud to share.",
+    "steps": ["Add raw footage", "Provide a reference", "Let the agents go to work"]
+  },
+  "graphics": {
+    "2.6": "Auto-edit timeline",
+    "6.7": "Production checklist + time-spent counter",
+    "13.4": "Hours-editing counter 9h41m → 0h00m",
+    "16.3": "FRAME: add raw footage → reference → launch",
+    "21.5": "Agent swarm · 6 running",
+    "24.4": "Export complete + likes counter",
+    "30.2": "End card · FRAME edit with agents"
+  },
+  "titles": [["Fable 5.2", 1.0, 2.4], ["zero experience", 5.4, 6.6], ["takes forever", 9.4, 10.3], ["the editing.", 12.5, 13.3], ["proud to share", 26.0, 27.0], ["get started today.", 28.9, 30.1]]
+}

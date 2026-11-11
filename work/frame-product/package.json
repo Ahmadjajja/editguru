@@ -1,0 +1,19 @@
+{
+  "name": "frame-product",
+  "version": "1.0.0",
+  "description": "",
+  "main": "frame.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node tests/test_frame_ui.mjs && node tests/test_revision_delivery.mjs && node tests/test_revision_history.mjs && node tests/test_project_panel.mjs && node tests/test_revision_continuation.mjs && node tests/test_general_revisions.mjs && node tests/test_commentary.mjs && node tests/test_prompt_version.mjs && node tests/test_reference_picker.mjs && node tests/test_presenter_studio.mjs && node tests/test_note_draft_retry.mjs && node tests/test_studio_ui.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "happy-dom": "^21.0.4"
+  }
+}

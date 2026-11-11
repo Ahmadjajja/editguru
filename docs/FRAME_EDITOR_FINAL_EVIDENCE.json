@@ -1,0 +1,171 @@
+{
+  "upstream_contract": "origin/main 51e1104 docs/SECTION_REVIEW_MVP.md",
+  "backend_tests": 102,
+  "section_review_checks": [
+    "Recorded MP4 with test audio imports into a stable revision",
+    "Section boundaries persist in source milliseconds",
+    "Bounded section playback carries actual nonzero audio samples",
+    "Play section stops at its end rather than continuing through the file",
+    "Play resumes from section start; canvas can interrupt review",
+    "Two revisions capture distinct actual playhead positions in creation order",
+    "Both note pins appear on the source timeline",
+    "Adjust and remove/keep change notes without deleting their history",
+    "Section notes and order survive browser reload before application",
+    "Compact controls on the left and a single editable canvas on the right",
+    "Studio backgrounds and primary controls are monochrome",
+    "One frozen set plans both actual Claude notes and explains the unsupported caption edit",
+    "Capturing and planning revisions does not render or overwrite the input version",
+    "Approving the whole note set produces exactly one saved checkpoint",
+    "Supported and unsupported note outcomes remain individually visible",
+    "New checkpoint preserves input lineage inside the same stable project revision",
+    "Actual combined output plays completely with unchanged duration",
+    "Final downloaded MP4 has H.264/AAC streams and fully decodes",
+    "Uploaded source bytes remain unchanged after planning and rendering",
+    "Restart and reload preserve every note, outcome, checkpoint and rendered output",
+    "Restore original preserves notes and the later playable checkpoint",
+    "Restoring the edited version recovers the same actual MP4 without a new render",
+    "Monochrome studio fits a 390px side window without horizontal overflow"
+  ],
+  "single_timeline_checks": [
+    "Exactly one timeline track and one seek control",
+    "A revision pin seeks to its saved source frame on the single layer",
+    "Clicking the single-layer timeline seeks and pauses actual video",
+    "Compare original plays original pixels without replacing the saved edit",
+    "Compare edited checkpoint restores actual edited pixels",
+    "Single pin layer remains usable without mobile horizontal overflow"
+  ],
+  "frame_only_checks": [
+    "Sidebar removed from the app DOM",
+    "Editing controls hidden until requested",
+    "Default surface is the frame and one pin timeline",
+    "N opens a small revision composer without a sidebar",
+    "Canvas note saved atomically at its real playhead time",
+    "Plain local tab honestly reports availability rather than a false chat push",
+    "Reload preserves the frame-only default",
+    "Frame-only mobile surface has no horizontal overflow"
+  ],
+  "storage_checks": [
+    "Second real edit committed one new checkpoint after the first saved version",
+    "Image, audio and other creative files persist in the same project",
+    "Project file downloads through the frame popover",
+    "Final MP4 downloads from frame-only controls and completely decodes",
+    "Restart preserves uploaded creative data, notes, accepted edits and rendered output",
+    "App returns to just the frame and one timeline"
+  ],
+  "basic_editor_checks": [
+    "Traditional Split cuts the single video layer at the actual playhead",
+    "Undo restores the previous clip decisions",
+    "Redo restores the split",
+    "Cut section removes exactly the selected source interval across a split",
+    "Keep section trims the single layer to the selected four seconds",
+    "A pinpoint explanation note stays anchored to original source time after manual edits",
+    "Manual edits render a real four-second saved MP4",
+    "Edited canvas plays the full rendered result",
+    "Source-time note pin maps to the correct frame on the trimmed output",
+    "Manual timeline, explanation pins and render survive restart and reopen",
+    "Traditional edit output downloads and fully decodes"
+  ],
+  "archive_integrity": {
+    "format": "frame-project/1",
+    "project_id": "4364000809b3411ead6bf4045b568260",
+    "revision_id": "76d9c7d899bf4061984d30f792c766e0",
+    "assets_verified": 6,
+    "all_zip_crc_pass": true,
+    "source_byte_identical": true,
+    "all_asset_hashes_pass": true,
+    "decoded_mp4s": [
+      "input.mp4",
+      "versions/55c20b329e664c82866d69d0ac3c0c65/edited.mp4",
+      "versions/23d8137c4346413893b9b46acee8c4bb/edited.mp4"
+    ],
+    "archive_bytes": 1608118
+  },
+  "media_integrity": {
+    "visual_checks": [
+      {
+        "seconds": 1,
+        "expected_x": 0,
+        "mean_absolute_rgb_error": 0.16681203703703704
+      },
+      {
+        "seconds": 4,
+        "expected_x": 0.1,
+        "mean_absolute_rgb_error": 0.1821712962962963
+      },
+      {
+        "seconds": 8,
+        "expected_x": 0,
+        "mean_absolute_rgb_error": 0.1852712962962963
+      }
+    ],
+    "audio_correlation": 0.9999927241372384,
+    "audio_samples_source": 576000,
+    "audio_samples_output": 576000,
+    "streams": [
+      {
+        "type": "video",
+        "start_time": "0.000000",
+        "duration": "12.000000"
+      },
+      {
+        "type": "audio",
+        "start_time": "0.000000",
+        "duration": "12.000000"
+      }
+    ],
+    "output_sha256": "2f209f5ffbeee0f0c7de3aacfee1909ac79fa758cae3b23e99f699a1868ee553",
+    "note": "Audio is a synthetic 440Hz test tone on real recorded application footage; not subjective speech quality acceptance."
+  },
+  "chat_readback": {
+    "method": "mcp__frame__get_project",
+    "project_id": "4364000809b3411ead6bf4045b568260",
+    "note_id": "0fcba2ad55004ac9abea10fdab725a72",
+    "source_time_ms": 3500,
+    "observed_in_this_chat": true,
+    "automatic_push_in_local_tab": false
+  },
+  "final_basic_project": {
+    "checks": [
+      "Traditional Split cuts the single video layer at the actual playhead",
+      "Undo restores the previous clip decisions",
+      "Redo restores the split",
+      "Cut section removes exactly the selected source interval across a split",
+      "Keep section trims the single layer to the selected four seconds",
+      "A pinpoint explanation note stays anchored to original source time after manual edits",
+      "Manual edits render a real four-second saved MP4",
+      "Edited canvas plays the full rendered result",
+      "Source-time note pin maps to the correct frame on the trimmed output",
+      "Manual timeline, explanation pins and render survive restart and reopen",
+      "Traditional edit output downloads and fully decodes"
+    ],
+    "project_id": "eb4f1b87f37443e3b5c507d86c8042e7",
+    "revision_id": "00a851d9d51845eea085adc58464917b",
+    "rendered": {
+      "url": "/media/eb4f1b87f37443e3b5c507d86c8042e7/versions/59552b209c744341900097a15c3aae7a/edited.mp4",
+      "duration": 4,
+      "timeline_version": 10,
+      "proposal_id": "59552b209c744341900097a15c3aae7a",
+      "clips": [
+        {
+          "id": "247d75a9445746af8b4997f5635773a5",
+          "start": 2.5,
+          "end": 3,
+          "origin_id": "247d75a9445746af8b4997f5635773a5"
+        },
+        {
+          "id": "b1f747c7b9cc426788c025bc30486c5b",
+          "start": 3,
+          "end": 6.5,
+          "origin_id": "247d75a9445746af8b4997f5635773a5"
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Plain localhost browser has no ChatGPT host bridge. Edits are saved and readable through the actual FRAME connection; automatic unsolicited chat messages are not active.",
+    "Host sendFollowUpMessage adapter is feature-detected and not claimed live-tested.",
+    "Frame project archive is a ZIP backup containing original media, timelines, notes, accepted versions and creative files; import UI for these archives is not implemented.",
+    "Image/audio/other uploads are preserved as creative references; only the main video track is edited.",
+    "The real recorded-visual acceptance fixture uses a synthetic audio tone for objective metering, not subjective speech quality acceptance."
+  ]
+}

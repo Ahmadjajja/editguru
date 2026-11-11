@@ -1,0 +1,118 @@
+{
+ "format": "frame-v3-style/1",
+ "name": "Higgsfield v3 Discovery",
+ "template": "higgsfield-v3",
+ "created": "2026-11-10 20:27",
+ "source": {
+  "project": "8ba3cd4acef0484dbb2a2d9a6927abe4",
+  "kit": "fable-52-higgsfield-mcp"
+ },
+ "captions": {
+  "max_words": 3,
+  "y": 1520,
+  "hot_words": [
+   "claude",
+   "fable",
+   "5.2",
+   "commercials",
+   "cinematic",
+   "ai",
+   "higgsfield",
+   "connectors",
+   "unlimited",
+   "mcp",
+   "free",
+   "prompt",
+   "commercial"
+  ]
+ },
+ "end_hold_s": 1.15,
+ "graphics": {
+  "step": {
+   "x": 451,
+   "y": 294,
+   "k": 1
+  },
+  "cta": {
+   "x": 540,
+   "y": 434,
+   "k": 1
+  }
+ },
+ "sections": [
+  {
+   "kind": "split",
+   "chip": "Made with Higgsfield · media kit",
+   "label": "from the clip"
+  },
+  {
+   "kind": "split",
+   "chip": "Made with Higgsfield · media kit",
+   "label": "from the clip"
+  },
+  {
+   "kind": "split",
+   "chip": "Made with Higgsfield · media kit",
+   "label": "from the clip"
+  },
+  {
+   "kind": "split",
+   "chip": "Made with Higgsfield · media kit",
+   "label": "from the clip"
+  },
+  {
+   "kind": "screen",
+   "head": "HERE'S HOW IT WORKS"
+  },
+  {
+   "kind": "split",
+   "chip": "Higgsfield media kit example · not made from this prompt",
+   "label": "from the clip"
+  },
+  {
+   "kind": "offer",
+   "white": [
+    "Comment \"FABLE\""
+   ],
+   "lime": [
+    "FREE & UNLIMITED",
+    "FOR 3 DAYS"
+   ],
+   "note": "New users · during the promotion"
+  },
+  {
+   "kind": "cta",
+   "keyword": "FABLE",
+   "sub": "for the full setup",
+   "sub2": "3 days free & unlimited · new users",
+   "keyword_from_speech": true
+  }
+ ],
+ "cues": {
+  "screen": [
+   "here's how",
+   "here is how",
+   "how it works",
+   "how to",
+   "step one",
+   "first",
+   "open"
+  ],
+  "offer": [
+   "free",
+   "unlimited",
+   "discount",
+   "promo",
+   "deal",
+   "trial",
+   "off"
+  ],
+  "cta": [
+   "comment",
+   "follow",
+   "dm",
+   "link in bio",
+   "subscribe"
+  ]
+ }
+}

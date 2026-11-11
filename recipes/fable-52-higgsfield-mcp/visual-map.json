@@ -1,0 +1,127 @@
+{
+ "format": "frame-visual-map/1",
+ "title": "Fable 5.2 × Higgsfield MCP — v3 Discovery look",
+ "template": "higgsfield-v3",
+ "note": "Clause → visual map for Dante's A-roll D439ECEF (sha256 a9710a29…). Anchors are spoken words; FRAME resolves them to measured output times. Clips are Higgsfield media-kit files chosen by Dante 2026-11-10.",
+ "caption_max_words": 3,
+ "end_hold_s": 1.15,
+ "hot_words": [
+  "claude",
+  "fable",
+  "5.2",
+  "commercials",
+  "cinematic",
+  "ai",
+  "higgsfield",
+  "connectors",
+  "unlimited",
+  "mcp",
+  "free",
+  "prompt",
+  "commercial"
+ ],
+ "visuals": [
+  {
+   "anchor": "commercials",
+   "kind": "split",
+   "media": "media-kit/commercial-velorix-watch.mp4",
+   "media_in": 0,
+   "label": "COMMERCIALS",
+   "chip": "Made with Higgsfield · media kit"
+  },
+  {
+   "anchor": "cinematic",
+   "kind": "split",
+   "media": "media-kit/cinematic-desert-run.mp4",
+   "media_in": 0,
+   "label": "CINEMATIC",
+   "chip": "Made with Higgsfield · media kit"
+  },
+  {
+   "anchor": "crazy",
+   "kind": "split",
+   "media": "media-kit/hypermotion-05-headphones.mp4",
+   "media_in": 0,
+   "label": "HYPERMOTION",
+   "chip": "Made with Higgsfield · media kit"
+  },
+  {
+   "anchor": "full",
+   "kind": "split",
+   "media": "media-kit/ugc-mug.mp4",
+   "media_in": 0.5,
+   "label": "UGC ADS",
+   "chip": "Made with Higgsfield · media kit"
+  },
+  {
+   "anchor": "here's",
+   "kind": "screen",
+   "media": "media-kit/claude-setup-mobile-fable.mp4",
+   "media_in": 0,
+   "media_out": 9.74,
+   "head": "HERE'S HOW IT WORKS",
+   "rows": [
+    {
+     "anchor": "open",
+     "num": "01",
+     "title": "OPEN CLAUDE",
+     "media_t": 0.45
+    },
+    {
+     "anchor": "connectors",
+     "num": "02",
+     "title": "GO TO CONNECTORS",
+     "media_t": 0.8
+    },
+    {
+     "anchor": "connect",
+     "num": "03",
+     "title": "CONNECT HIGGSFIELD",
+     "media_t": 2.0
+    },
+    {
+     "anchor": "upload",
+     "num": "04",
+     "title": "UPLOAD A PRODUCT IMAGE",
+     "media_t": 9.66
+    },
+    {
+     "anchor": "tell",
+     "num": "05",
+     "title": "SAY WHAT TO CREATE",
+     "media_t": 9.72
+    }
+   ],
+   "comment": "Dante's setup screen recording (2026-11-10), replaces the step card. media_t = recording second shown when that step's word is spoken; between steps the recording speeds up to fit."
+  },
+  {
+   "anchor": "watch",
+   "kind": "split",
+   "media": "media-kit/commercial-track-bike.mp4",
+   "media_in": 4.0,
+   "label": "IMAGE → COMMERCIAL",
+   "chip": "Higgsfield media kit example · not made from this prompt"
+  },
+  {
+   "anchor": "and the craziest",
+   "kind": "offer",
+   "white": [
+    "ALL VIDEO MODELS",
+    "ON HIGGSFIELD MCP"
+   ],
+   "lime": [
+    "FREE & UNLIMITED",
+    "FOR 3 DAYS"
+   ],
+   "note": "New users · during the promotion"
+  },
+  {
+   "anchor": "follow",
+   "kind": "cta",
+   "land_on": "fable",
+   "keyword": "FABLE",
+   "sub": "for the full setup",
+   "sub2": "3 days free & unlimited · new users"
+  }
+ ]
+}

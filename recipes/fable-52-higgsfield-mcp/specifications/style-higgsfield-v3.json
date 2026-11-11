@@ -1,0 +1,26 @@
+{
+ "format": "frame-style/1",
+ "name": "Dante · Higgsfield v3 Discovery",
+ "revision": 1,
+ "provenance": {
+  "source_kind": "own_video",
+  "reference_sha256": ["9c3ae3c5b43daa28a6c59b40642330b1d79195416719af87870da5a11ae9f288"],
+  "use_scope": {"type": "creator"},
+  "rights_note": "Dante's own edit (higgsfield_content_factory_v3_DISCOVERY.mp4), accepted 2026-10-24 ('beautiful job well done'). Values come from the compositor that rendered it; see STYLE-HIGGSFIELD-V3.md."
+ },
+ "frame": {"aspect": "9:16", "fit": "cover"},
+ "pacing": {"remove_pauses": true, "min_pause_s": 0.35, "pad_s": 0.08, "remove_retakes": true},
+ "captions": {"max_words": 3, "max_s": 1.6, "y": 0.635, "size": 0.034, "color": "#FFFFFF", "emphasis_color": "#E2FD56", "case": "upper", "font": "inter"},
+ "evidence": {
+  "frame.aspect": {"method": "measured", "note": "v3 export probed 1080x1920 (codex-handoff/evidence/results/C1)."},
+  "pacing.min_pause_s": {"method": "measured", "note": "v3 QC gate max internal pause 0.35 s; longest kept pause 0.34 s (codex-handoff C4)."},
+  "pacing.pad_s": {"method": "measured", "note": "v3 kept 80 ms after each decay tail (hf_render_v3.py:13 EDL; C2). FRAME pads ASR word times, not energy onsets, so this is an approximation."},
+  "pacing.remove_retakes": {"method": "user_set", "note": "v3 used one chosen take per line; raw single-clip footage needs retake removal to get the same result."},
+  "captions.max_words": {"method": "measured", "note": "v3 chunks were 1-5 words, mostly 2-3 (codex-handoff/evidence/inputs/captions_v3.json)."},
+  "captions.y": {"method": "measured", "note": "v3 full-frame caption centre y=1220 of 1920 (hf_render_v3.py:58)."},
+  "captions.size": {"method": "measured", "note": "v3 caption text 66 px on a 1920 px frame (hf_render_v3.py FC=font(66,'Heavy'))."},
+  "captions.emphasis_color": {"method": "measured", "note": "#E2FD56 sampled from Higgsfield's own UI for the v3 edit (HANDOFF.md 3.3)."},
+  "captions.case": {"method": "measured", "note": "v3 captions drawn upper-case (hf_render_v3.py chunk_img)."},
+  "captions.font": {"method": "user_set", "note": "v3 used SF Pro Heavy/Black, which FRAME does not offer; Inter Black is the nearest available. Needs Dante's OK."}
+ }
+}
