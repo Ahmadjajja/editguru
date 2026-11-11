@@ -31,6 +31,7 @@ import quick_project_inputs
 import quick_style
 import quick_recipe
 import quick_v3
+import quick_autoedit
 import sys
 
 ROOT = Path(__file__).resolve().parent
@@ -286,6 +287,8 @@ class Handler(BaseHTTPRequestHandler):
         if not self.local_host():
             self.close_connection = True
             return self.json(403, {'error': 'Use the loopback address.'})
+        if quick_autoedit.route(self, sys.modules[__name__], "GET"):
+            return
         if quick_style.route(self, sys.modules[__name__], "GET"):
             return
         if quick_recipe.route(self, sys.modules[__name__], "GET"):
@@ -377,6 +380,8 @@ class Handler(BaseHTTPRequestHandler):
                                       'https://%s' % PUBLIC_HOST if PUBLIC_HOST else ''):
             self.close_connection = True
             return self.json(403, {'error': 'Use Katana from its local page.'})
+        if quick_autoedit.route(self, sys.modules[__name__], "POST"):
+            return
         if quick_style.route(self, sys.modules[__name__], "POST"):
             return
         if quick_recipe.route(self, sys.modules[__name__], "POST"):

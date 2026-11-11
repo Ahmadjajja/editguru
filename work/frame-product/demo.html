@@ -36,6 +36,11 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 #intro ol li b{flex:0 0 22px;height:22px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);color:var(--accent);font-size:12px;display:inline-flex;align-items:center;justify-content:center}
 #intro .cta{display:flex;align-items:center;gap:16px;margin-top:8px;flex-wrap:wrap}
 #intro .file{font-size:13px;color:var(--dim)}
+#intro .up{display:flex;flex-direction:column;gap:8px;margin-top:2px}
+#intro .up .bar{height:4px;border-radius:4px;background:var(--panel2);overflow:hidden;max-width:420px}
+#intro .up .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+#intro .up .msg{font-size:13px;color:var(--dim)}
+#intro .up .msg.bad{color:#ffb3c0}
 #intro .file code{color:var(--text);font:13px ui-monospace,SFMono-Regular,Menlo,monospace}
 #introVid{height:min(76vh,760px)}
 #soundBtn{position:absolute;right:12px;bottom:12px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.6);font-size:15px}
@@ -121,13 +126,19 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 <section class="screen" id="intro">
   <div class="copy">
     <div class="eyebrow" id="iEyebrow">AI-native video editing</div>
-    <h1 id="iHeadline">Add raw footage. Let the agents go to work.</h1>
+    <h1 id="iHeadline">Add a reference. Add raw footage. Get the same style.</h1>
     <p class="body" id="iBody">FRAME turns one raw take into a finished, post-ready edit. An agent swarm cuts, captions, scores and finishes the video while you watch.</p>
     <ol id="iSteps"></ol>
     <div class="cta">
       <button class="btn pulse" id="go" disabled>Launch agent swarm <span>→</span></button>
+      <button class="btn ghost" id="refBtn">🎞 1 · Reference video (optional)</button>
+      <input type="file" id="refInput" accept="video/*" hidden>
+      <button class="btn ghost" id="uploadBtn">⬆ 2 · Upload your raw video</button>
+      <input type="file" id="uploadInput" accept="video/*" hidden>
       <span class="file" id="iFile"></span>
     </div>
+    <div class="up" id="refUp" hidden><div class="msg" id="refMsg"></div></div>
+    <div class="up" id="up" hidden><div class="bar"><i id="upBar"></i></div><div class="msg" id="upMsg"></div></div>
   </div>
   <div class="phone" id="introVid">
     <video id="rawVid" muted loop playsinline preload="auto"></video>
@@ -172,7 +183,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 
 <script>
 (() => {
-const RECIPE = new URLSearchParams(location.search).get('recipe') || 'frame-demo-v1';
+let RECIPE = new URLSearchParams(location.search).get('recipe') || 'frame-demo-v1';
 const media = p => `/recipe-media/${RECIPE}/${p.split('/').map(encodeURIComponent).join('/')}`;
 const $ = s => document.querySelector(s);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -271,7 +282,7 @@ async function show(kind, path, tag, opts={}){
   const P=$('#player');
   let el;
   if (kind==='video'){
-    el=document.createElement('video'); el.src=media(path); el.muted=true; el.playsInline=true; el.preload='auto';
+    el=document.createElement('video'); el.src=/^(blob:|\/)/.test(path) ? path : media(path); el.muted=true; el.playsInline=true; el.preload='auto';
     if (opts.loop) el.loop=true;
     el.addEventListener('loadedmetadata',()=>{ if(opts.at!=null) el.currentTime=opts.at; else if(el.duration) el.currentTime=el.duration*0.35; el.play().catch(()=>{}); },{once:true});
   } else if (kind==='image'){
@@ -339,7 +350,7 @@ $('#finalVid').addEventListener('click', ()=>{ const v=$('#finVid'); v.paused ? 
 $('#again').addEventListener('click', ()=>{ const v=$('#finVid'); v.currentTime=0; v.muted=false; v.play(); });
 
 function start(){ go('swarm'); setTimeout(replay, 500); }
-function restart(){ run++; document.querySelectorAll('#player video').forEach(v=>v.pause()); go('intro'); }
+function restart(){ run++; $('#uploadBtn').disabled=false; document.querySelectorAll('#player video').forEach(v=>v.pause()); go('intro'); }
 $('#go').addEventListener('click', start);
 $('#reset').addEventListener('click', restart);
 $('#restart').addEventListener('click', restart);
@@ -350,14 +361,160 @@ addEventListener('keydown', e=>{
 });
 addEventListener('resize', ()=>movePlayhead(0));
 
-fetch(`/api/recipes/${RECIPE}`).then(r=>r.ok?r.json():Promise.reject(r.status)).then(r=>{
-  recipe=r;
-  if (r.lanes) LANES=r.lanes;
-  LANE_COLOR=Object.fromEntries(LANES.map(l=>[l[0],l[2]]));
-  fillIntro();
-  $('#finVid').src=media(r.final);
-  $('#go').disabled=false;
-}).catch(e=>err(`Couldn't load the recipe "${RECIPE}" (${e}). Is FRAME running?`));
+function load(name){
+  RECIPE = name;
+  return fetch(`/api/recipes/${RECIPE}`).then(r=>r.ok?r.json():Promise.reject(r.status)).then(r=>{
+    recipe=r;
+    LANES = r.lanes || [['v1','VIDEO','var(--v1)'],['t1','TEXT','var(--t1)'],['a1','AUDIO','var(--a1)']];
+    LANE_COLOR=Object.fromEntries(LANES.map(l=>[l[0],l[2]]));
+    fillIntro();
+    $('#finVid').src=media(r.final);
+    $('#go').disabled=false;
+  });
+}
+load(RECIPE).catch(e=>err(`Couldn't load the recipe "${RECIPE}" (${e}). Is FRAME running?`));
+
+// ---------------- Reference video: learn its editing style ----------------
+let refId=null;
+function refState(msg, bad){ $('#refUp').hidden=false; $('#refMsg').textContent=msg; $('#refMsg').classList.toggle('bad',!!bad); }
+$('#refBtn').addEventListener('click', ()=>$('#refInput').click());
+$('#refInput').addEventListener('change', e=>{
+  const f=e.target.files[0]; e.target.value='';
+  if (!f) return;
+  if (f.size > 700*1024*1024) return refState('That reference is over 700 MB.', true);
+  refId=null; $('#refBtn').disabled=true;
+  const xhr=new XMLHttpRequest();
+  xhr.open('POST','/api/autoedit/reference');
+  xhr.setRequestHeader('Content-Type','application/octet-stream');
+  xhr.setRequestHeader('X-Filename', encodeURIComponent(f.name));
+  xhr.upload.onprogress = ev => { if (ev.lengthComputable) refState(`Uploading reference… ${Math.round(ev.loaded/ev.total*100)}%`); };
+  xhr.onerror = () => { refState('Reference upload failed.', true); $('#refBtn').disabled=false; };
+  xhr.onload = async () => {
+    let body={}; try{ body=JSON.parse(xhr.responseText); }catch{}
+    if (xhr.status!==202){ refState(body.error || `Reference upload failed (${xhr.status}).`, true); $('#refBtn').disabled=false; return; }
+    const id=body.id; refId=id;
+    for(;;){
+      let j={}; try{ j=await (await fetch(`/api/autoedit/reference/${id}`)).json(); }catch{}
+      if (j.status==='done'){ refState(`Reference ready · ${j.summary} Now upload your raw video.`); break; }
+      if (j.status==='failed'){ refId=null; refState(j.error||'Could not study the reference.', true); break; }
+      refState(`${j.stage||'Studying the reference'}…`); await sleep(1500);
+    }
+    $('#refBtn').disabled=false;
+  };
+  refState(`Uploading reference ${f.name}…`);
+  xhr.send(f);
+});
+
+// ---------------- Upload any video ----------------
+function upState(msg, frac, bad){
+  $('#up').hidden=false; $('#upMsg').textContent=msg; $('#upMsg').classList.toggle('bad',!!bad);
+  if (frac!=null) $('#upBar').style.width=Math.round(frac*100)+'%';
+}
+$('#uploadBtn').addEventListener('click', ()=>$('#uploadInput').click());
+$('#uploadInput').addEventListener('change', e=>{
+  const f=e.target.files[0]; e.target.value='';
+  if (!f) return;
+  if (f.size > 700*1024*1024) return upState('That file is over 700 MB. Pick a shorter or smaller video.', 0, true);
+  $('#uploadBtn').disabled=true; $('#go').disabled=true;
+  showLocal(f);
+  const xhr=new XMLHttpRequest();
+  xhr.open('POST','/api/autoedit');
+  xhr.setRequestHeader('Content-Type','application/octet-stream');
+  xhr.setRequestHeader('X-Filename', encodeURIComponent(f.name));
+  if (refId) xhr.setRequestHeader('X-Reference', refId);
+  xhr.upload.onprogress = ev => { if (ev.lengthComputable) upState(`Uploading ${f.name}… ${Math.round(ev.loaded/ev.total*100)}%`, ev.loaded/ev.total*0.25); };
+  const fail = msg => { upState(msg, 0, true); $('#uploadBtn').disabled=false; $('#go').disabled=!recipe; };
+  xhr.onerror = () => fail('Upload failed. Check the connection and try again.');
+  xhr.onload = () => {
+    let body={}; try{ body=JSON.parse(xhr.responseText); }catch{}
+    if (xhr.status!==202) return fail(body.error || `Upload failed (${xhr.status}).`);
+    poll(body.id);
+  };
+  upState(`Uploading ${f.name}…`, 0);
+  xhr.send(f);
+});
+// Put the picked video on the right straight away; if the browser can't decode it
+// (e.g. some .MOV/HEVC), fall back to the server's preview once it's ready.
+let localUrl=null, localFailed=false;
+function showLocal(f){
+  const v=$('#rawVid');
+  if (localUrl) URL.revokeObjectURL(localUrl);
+  localUrl=URL.createObjectURL(f); localFailed=false;
+  v.onerror=()=>{ localFailed=true; };
+  v.src=localUrl; v.currentTime=0; v.play().catch(()=>{});
+  $('#rawPill').textContent=`Raw footage · ${f.name}`;
+  $('#iFile').innerHTML='<code></code> · uploading'; $('#iFile code').textContent=f.name;
+  $('#iHeadline').textContent='Editing your video…';
+}
+async function poll(id){
+  // Live mode: the swarm screen opens now and each agent step lands as the server decides it.
+  const my = ++run, alive = () => my===run;
+  go('swarm');
+  recipe = {duration: 60, canvas:[1080,1920], steps:[]};
+  LANES = [['v1','A-ROLL','var(--v1)'],['t1','CAPTIONS','#f2f2f5'],['a1','VOICE','var(--a1)']];
+  LANE_COLOR = Object.fromEntries(LANES.map(l=>[l[0],l[2]]));
+  buildTimeline(); $('#log').innerHTML=''; document.querySelectorAll('.cursor').forEach(c=>c.remove());
+  $('#playerMeta').innerHTML='&nbsp;';
+  setStatus('Agent swarm', 'Reading your upload…');
+  if (localUrl && !localFailed) await show('video', localUrl, 'Raw footage', {loop:true, at:0});
+  logEntry(['FRAME','#c6ff3d'], 'Upload received', $('#rawPill').textContent.replace('Raw footage · ',''));
+
+  let played = 0, placed = 0, lastStage = '', previewShown = false, j = {};
+  const FRAME_AGENT = ['FRAME','#c6ff3d'];
+  const refresh = async () => {           // lanes + target length from the in-progress recipe
+    const r = await (await fetch(`/api/recipes/${RECIPE}`)).json();
+    const lanesChanged = JSON.stringify(r.lanes) !== JSON.stringify(LANES);
+    const durChanged = Math.abs((r.duration||0) - recipe.duration) > .01;
+    recipe = Object.assign(recipe, {duration:r.duration, canvas:r.canvas, title:r.title, rawClip:r.rawClip});
+    if (r.lanes) { LANES = r.lanes; LANE_COLOR = Object.fromEntries(LANES.map(l=>[l[0],l[2]])); }
+    if ((lanesChanged || durChanged) && placed === 0) buildTimeline();
+    $('#playerMeta').textContent = `${recipe.canvas.join('×')} · target ${recipe.duration.toFixed(1)} s`;
+  };
+  for(;;){
+    if (!alive()) return;
+    try{ j = await (await fetch(`/api/autoedit/${id}`)).json(); }catch{ await sleep(1000); continue; }
+    if (j.status==='failed' || (j.error && j.status!=='working')){
+      setStatus('Stopped', 'The edit failed.'); logEntry(FRAME_AGENT, 'Edit failed', j.error || 'Unknown error');
+      err(j.error || 'The edit failed.'); upState(j.error || 'The edit failed.', 0, true); $('#uploadBtn').disabled=false; return;
+    }
+    if (j.recipe && RECIPE !== j.recipe){ RECIPE = j.recipe; history.replaceState(null,'',`?recipe=${encodeURIComponent(j.recipe)}`); }
+    if (j.preview && !previewShown && (localFailed || !localUrl)){ previewShown=true; await show('video', `/api/autoedit/${id}/preview`, 'Raw footage', {loop:true, at:0}); }
+    const steps = j.steps || [];
+    if (played < steps.length){
+      await refresh();
+      while (played < steps.length){              // animate each real step as it arrives
+        if (!alive()) return;
+        const s = steps[played++]; const agent = AGENT[s.lane] || ['Agent','#ccc'];
+        setStatus(`Agent swarm  ${played}`, `${agent[0]}: ${s.title}`);
+        logEntry(agent, s.title, s.did);
+        if (s.show) await show(s.show.kind, s.show.path, `${agent[0]} · ${s.phase}`, {at:s.show.at});
+        await sleep(700);
+        const per = Math.max(25, Math.min(160, 2600 / Math.max(1, s.place.length)));
+        for (const p of s.place){ if (!alive()) return; placeClip(p, agent); placed++; await sleep(per); }
+        await sleep(500);
+      }
+      document.querySelectorAll('.cursor').forEach(c=>c.remove());
+    }
+    if (j.status==='done') break;
+    const st = (j.stage||'').replace(/ · \d+%$/,'');
+    if (st && st !== lastStage){ lastStage = st; if (!/^Queued/.test(st)) logEntry(FRAME_AGENT, st, j.render!=null ? 'Encoding 1080×1920 with every edit above.' : 'Working on the real footage…'); }
+    if (j.render!=null){
+      $('#timeline').classList.add('locked');
+      setStatus('Timeline locked', j.stage); movePlayhead(j.render * recipe.duration);
+    } else setStatus('Agent swarm', j.stage + '…');
+    await sleep(1000);
+  }
+  if (!alive()) return;
+  $('#timeline').classList.add('locked'); movePlayhead(recipe.duration);
+  logEntry(FRAME_AGENT, 'Final cut rendered', `${placed} edits from ${played} agent steps.`);
+  setStatus('Done', 'Final cut ready.');
+  try{ await load(j.recipe); }catch(e){ return err(`Edit finished but couldn't load it (${e}).`); }
+  if (localUrl){ URL.revokeObjectURL(localUrl); localUrl=null; } $('#rawVid').onerror=null;
+  upState((j.notes||[]).join(' ') || 'Edit ready. Press Launch to replay the swarm.', 1);
+  $('#uploadBtn').disabled=false;
+  await sleep(1200); if (!alive()) return;
+  showFinal();
+}
 })();
 </script>
 </body>

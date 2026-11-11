@@ -29,6 +29,10 @@ if ! "$PYTHON" -c 'import PIL, requests, numpy' >/dev/null 2>&1; then
     exit 1
   fi
 fi
+# Optional: speech transcription for captions on uploaded videos. Frame still runs without it.
+if ! "$PYTHON" -c 'import faster_whisper' >/dev/null 2>&1; then
+  "$PYTHON" -m pip install -q 'faster-whisper>=1.0,<2' >/dev/null 2>&1 || printf '%s\n' 'Note: faster-whisper did not install; uploads will be cut without captions.' >&2
+fi
 export PORT="${PORT:-8876}"
 printf 'FRAME editor: http://127.0.0.1:%s/frame\n' "$PORT"
 exec "$PYTHON" "$HERE/app.py"

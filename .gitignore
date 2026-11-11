@@ -49,3 +49,6 @@ __pycache__/
 .env
 node_modules/
 recipes/*/media/*.mp4
+
+# Recipes generated from /demo uploads
+recipes/u-*/
