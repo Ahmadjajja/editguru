@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {groupProjects,projectWorkTime} from '../widget/project-library.js';
+const a={project_id:'a',name:'My film',created:100,updated_at:999999,clips:[],work_project:{id:'a',title:'My film',role:'cut'},activity:[{command:'trim_clip',status:'done',updated_at:900}],notes:[]};
+const b={project_id:'b',name:'Other film',created:400,updated_at:9999999,clips:[],work_project:{id:'b',title:'Other film',role:'cut'},notes:[]};
+assert.equal(groupProjects([b,a])[0].id,'a','real editing outranks newer file rewrite');
+assert.equal(projectWorkTime({...a,activity:[{command:'get_project',status:'done',updated_at:999999}]}),100,'opening the library does not count as editing');
+assert.equal(projectWorkTime({...a,activity:[{command:'trim_clip',status:'failed',updated_at:999999}]}),100,'failed commands do not promote a project');
+const child={...a,project_id:'child',name:'Latest take',created:800,activity:[],work_project:{...a.work_project,label:'Latest revision'},revision_parent:{project_id:'a'}};
+const working={...a,notes:[{created_at:1200,instruction:'Change the opening'}]};
+const group=groupProjects([b,child,working])[0];assert.equal(group.id,'a');assert.equal(group.updated,1200);assert.equal(group.members[0].project_id,'a','most recently revised cut is first inside its project');assert.equal(group.latest.project_id,'child','notes do not replace the latest video preview with an older video');
+console.log('PASS: real work recency, no file/read/failed-command promotion, recent nested revisions and correct latest video');

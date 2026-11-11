@@ -1,0 +1,48 @@
+{
+  "tested_implementation_commit": "9a78194b87d3752d6cbee44128722615f55bee3d",
+  "branch": "feat/pins-claude-mvp-2026-11-02",
+  "backend_tests": 83,
+  "browser_checks": [
+    "Real MP4 imported into one stable project and revision",
+    "Source video plays and pauses",
+    "Restart synchronizes video, seek and clock",
+    "Three timestamp pins saved",
+    "Clicking a pin seeks to its timestamp",
+    "Actual Claude returns a concrete supported trim proposal",
+    "Proposal has no effect before explicit approval",
+    "Approval renders and commits the accepted operation",
+    "Same revision atomically contains source, three pins, accepted edit and rendered reference",
+    "Actual rendered MP4 plays fully in Chrome",
+    "Rendered pin maps source 4 seconds to output 3 seconds",
+    "Browser reload restores complete revision",
+    "Backend restart restores all pins, instructions, accepted edits and output",
+    "Final MP4 downloaded through UI, probed and completely decoded",
+    "Existing pin instruction can be edited and persisted",
+    "Pin deletion persists",
+    "Unsupported Claude request shows clear error and preserves working render",
+    "Compact 390px side window has no horizontal overflow"
+  ],
+  "project_id": "2bbcae4123574db8b91ce03cb6aee2e2",
+  "revision_id": "4bfc9fcf96184ff69ef1c759e0e4ceb6",
+  "source_duration": 25.266667,
+  "source_has_audio": false,
+  "output_duration": "7.000000",
+  "output_bytes": 57875,
+  "output_sha256": "c060bb484b6d9f1285c54e8f58b4c8f7e153b4a89eff5c034fd8467ebe8f2323",
+  "output_streams": [
+    {
+      "codec": "h264",
+      "type": "video",
+      "width": 1440,
+      "height": 1000
+    }
+  ],
+  "full_decode": "ffmpeg -v error -xerror -i output/playwright/revision-mvp/final.mp4 -f null -; exit 0",
+  "evidence_directory": "/Users/dantegarcia/frame-creative-agent/output/playwright/revision-mvp",
+  "saved_revision": "/Users/dantegarcia/frame-creative-agent/work/frame-product/jobs/2bbcae4123574db8b91ce03cb6aee2e2/timeline.json",
+  "limitations": [
+    "Only trim_clip and position_clip via Claude; no arbitrary code execution or generated capabilities.",
+    "Recorded browser acceptance footage has no audio. Existing real FFmpeg regression tests cover synchronized audio/video cuts.",
+    "Local single backend process; no native ChatGPT/Atlas connection."
+  ]
+}

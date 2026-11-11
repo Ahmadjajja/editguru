@@ -1,0 +1,106 @@
+{
+  "implementation_commit": "89bdb8bde4c6d210328c34e7d83bdb357b23e9ac",
+  "backend_tests": 88,
+  "checks": [
+    "Real MP4 imported into one stable project and revision",
+    "Clicking the playable canvas interrupts video playback",
+    "Playable canvas displays actual decoded video pixels",
+    "Restart synchronizes video, seek and clock",
+    "Three start/end ranges saved",
+    "Clicking a pin seeks to its timestamp",
+    "Actual Claude returns a position operation scoped to the start/end pins",
+    "Proposal has no effect before explicit approval",
+    "Approval renders and commits the accepted operation",
+    "Same revision contains three ranges and changes only footage between 2 and 4 seconds",
+    "Actual rendered MP4 plays fully in Chrome",
+    "Rendered range start seeks to its source time",
+    "Browser reload restores complete revision",
+    "Backend restart restores all pins, instructions, accepted edits and output",
+    "Final MP4 downloaded through UI, probed and completely decoded",
+    "Existing pin instruction can be edited and persisted",
+    "Pin deletion persists",
+    "Unsupported Claude request shows clear error and preserves working render",
+    "Canvas drag pauses and persists a range-scoped proposal without applying it",
+    "Approved canvas drag renders a second real result in the same revision",
+    "Canvas edit and start/end ranges survive backend restart and browser reload",
+    "Canvas-edited MP4 downloaded and completely decoded",
+    "Compact 390px side window has no horizontal overflow"
+  ],
+  "project_id": "de6b0ec7dc9f4e98b26466f1b95be7e5",
+  "revision_id": "4abceb0529b24f34a3e0c15790446ffd",
+  "accepted_edits": 2,
+  "ranges": [
+    {
+      "id": "b0a81d412a024ec7bd2873f66cc6aa28",
+      "time": 2,
+      "start": 2,
+      "end": 4,
+      "clip_id": "c2d3b616b377466b9e86d76b7681b83c",
+      "instruction": "Move the video right by 10 percent only between my start and end pins. Preserve all footage and audio before and after."
+    },
+    {
+      "id": "56d658cb74a94504aa5bda5ab0131d66",
+      "time": 6,
+      "start": 6,
+      "end": 8,
+      "clip_id": "c2d3b616b377466b9e86d76b7681b83c",
+      "instruction": ""
+    },
+    {
+      "id": "33056f007f45451f9ce89c5121325a7c",
+      "time": 10,
+      "start": 10,
+      "end": 12,
+      "clip_id": "c2d3b616b377466b9e86d76b7681b83c",
+      "instruction": ""
+    }
+  ],
+  "rendered": {
+    "url": "/media/de6b0ec7dc9f4e98b26466f1b95be7e5/versions/91fc9fd1a8a54f4bb9f507aff46be5e7/edited.mp4",
+    "duration": 25.266667,
+    "timeline_version": 15,
+    "proposal_id": "91fc9fd1a8a54f4bb9f507aff46be5e7",
+    "clips": [
+      {
+        "id": "c2d3b616b377466b9e86d76b7681b83c",
+        "start": 0,
+        "end": 2,
+        "origin_id": "c2d3b616b377466b9e86d76b7681b83c"
+      },
+      {
+        "id": "186cbca2bcc74f1eb3bdb512dbbf2bab",
+        "start": 2,
+        "end": 4,
+        "origin_id": "c2d3b616b377466b9e86d76b7681b83c",
+        "x": 0.15000002392729167,
+        "y": 0
+      },
+      {
+        "id": "8a096baa6dd845e4af3fdc89ae14924b",
+        "start": 4,
+        "end": 25.266666666666666,
+        "origin_id": "c2d3b616b377466b9e86d76b7681b83c"
+      }
+    ]
+  },
+  "canvas_output_sha256": "bfa5407d1df56593e01346efd52f492dec4984ea9938ca35506c8237279bbf5d",
+  "full_decode": "exit 0",
+  "before_during_after_frame_checks": [
+    {
+      "source_seconds": 1,
+      "expected_x": 0,
+      "mean_absolute_rgb_error": 0.38690833333333335
+    },
+    {
+      "source_seconds": 3,
+      "expected_x": 0.15,
+      "mean_absolute_rgb_error": 0.24327546296296296
+    },
+    {
+      "source_seconds": 5,
+      "expected_x": 0,
+      "mean_absolute_rgb_error": 0.24169398148148147
+    }
+  ],
+  "artifact_directory": "/Users/dantegarcia/frame-creative-agent/output/playwright/revision-mvp"
+}

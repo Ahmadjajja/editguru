@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const source=fs.readFileSync(new URL('../swarm/frame-bridge.js',import.meta.url),'utf8');
+const methods=source.slice(source.indexOf('    async frameSaveNow()'),source.indexOf('    // ---- imported files'));
+let posts=0,timers=0,stops=0;
+const context={PID:'p',MAX_SECTIONS:240,clearTimeout(){},setTimeout(){timers++},api:async()=>{posts++;const e=Error('conflict');e.status=409;throw e}};
+const engine=vm.runInNewContext('(new class {'+methods+'})',context);
+Object.assign(engine,{frame:{ok:true,version:1},p:{clips:[{tr:'v1',m:'src',in:0,out:3,id:'c'}]},media:[],frameIds:{},swarm:{},mediaSig:()=>'',buildStudio:()=>({}),frameSet(){},frameStop(){stops++}});
+await engine.frameSaveNow();
+assert.equal(posts,1,'A stale save must never retry with the newer version');
+assert.equal(engine.frame.version,1,'Conflict must not advance the stale browser version');
+assert.equal(timers,0,'Conflict must halt autosave retries');
+assert.equal(stops,1,'Conflict must stop agent work');
+await assert.rejects(engine.flushSave(),/resolve the editing conflict/);
+await engine.frameSaveNow();assert.equal(posts,1);
+console.log('PASS: stale save stops, keeps local state, and blocks export flush');

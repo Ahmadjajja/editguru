@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {clipCandidates,validClipRange} from '../widget/reference-clips.js';
+import {buildImplementationPrompt} from '../widget/revision-prompt.js';
+const pid='a'.repeat(32),eid='b'.repeat(32),aid='c'.repeat(32);
+const doc={project_id:pid,name:'Actual edit.mp4',source_duration:40,video_references:[],assets:[],exports:[]};
+const source=clipCandidates(doc);assert.equal(source.length,1,'a real project with no linked references must still expose its video');assert.equal(source[0].key,pid+':source');
+const full=clipCandidates({...doc,exports:[{id:eid,status:'done',duration:40},{id:'not-ready',status:'working'}],checkpoints:[{label:'Premium cards',rendered:{proposal_id:eid,duration:40}}],assets:[{id:aid,name:'Reference.MP4',mime_type:'application/octet-stream'},{id:'image',name:'Reference.png',mime_type:'image/png'}]});
+assert.equal(full.length,3);assert.equal(full.filter(r=>r.export_id===eid).length,1);assert.equal(full.find(r=>r.export_id===eid).name,'Premium cards');assert.equal(full.find(r=>r.asset_id===aid).project_id,pid);assert.ok(full.every(r=>!r.key.includes('not-ready')));
+assert.ok(validClipRange(1,3,40));assert.ok(!validClipRange(4,3,40));assert.ok(!validClipRange(0,41,40));
+const prompt=buildImplementationPrompt({...doc,notes:[{id:'note',scope:'general',instruction:'Use this motion',reference_clips:[{name:'Export',project_id:pid,export_id:eid,start:1,end:3}]}]}).text;
+assert.match(prompt,new RegExp('/versions/'+eid+'/edited.mp4'));assert.match(prompt,/1\.000s → 3\.000s/);assert.match(prompt,/saved video/);
+console.log('PASS: unlinked project source, completed exact export, project files, no unfinished media, bounded ranges and exact export handoff.');

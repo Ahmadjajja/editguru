@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "Original first frame paints while paused immediately after reload",
+    "Rendered first frame paints while paused without starting playback",
+    "Canvas click interrupts live rendered playback",
+    "Frame step updates paused canvas pixels"
+  ]
+}

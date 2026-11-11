@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>FRAME · New story from recipe</title>
+<style>body{background:#14151b;color:#eee;font:16px system-ui;max-width:850px;margin:40px auto;padding:20px}textarea,input{display:block;width:95%;background:#252735;color:white;padding:12px;margin:12px 0;border:1px solid #777}button,a{padding:10px;margin:5px;color:#ddd}button{background:#383155;border:1px solid #777;cursor:pointer}video{width:240px;max-height:430px}pre{white-space:pre-wrap;background:#252735;padding:16px}button:disabled{opacity:.45}</style>
+<h1>New story, saved recipe</h1><p>Reuse the ChatGPT Mastery portrait layout and white English captions with new footage. The original story, artwork, music and typing intro stay out of this cut.</p>
+<p><a href="/swarm" target="_blank">Upload or choose footage in FRAME</a>, then paste its project ID here. Use the paused edit controls below to change this cut.</p>
+<label>Project ID<input id="pid" pattern="[a-f0-9]{32}"></label>
+<label>New script (optional if this footage has a saved timed transcript)<textarea id="script" rows="4" placeholder="A seed becomes a small garden. Save the rain, grow tomorrow."></textarea></label>
+<p>A pasted script gets estimated, evenly spaced word timings. Use a saved timed transcript for speech alignment. Existing footage audio is preserved; this does not generate narration.</p>
+<button id="review">Review plan</button><button id="start" disabled>Apply recipe</button><button id="pause" disabled>Pause</button><button id="resume" disabled>Resume with my edits</button><button id="restore">Restore saved run</button><button id="export" disabled>Export MP4</button>
+<p><a id="editor" hidden target="_blank">Open source editor</a><a id="download" hidden>Download MP4</a><a id="provenance" hidden target="_blank">Export provenance</a></p><video id="preview" controls></video><fieldset id="edits" disabled><legend>Edit while paused</legend><label>Trim from the start of the first source clip (seconds)<input id="trim" type="number" min="0" step="0.1" value="0"></label><label>Caption override (optional)<input id="caption" placeholder="Leave empty to use the planned script"></label><button id="saveEdit">Save my edit</button></fieldset><pre id="status" role="status">Review a plan before applying it.</pre>
+<script>
+const $=id=>document.getElementById(id);let plan=null,run=null,busy=false,epoch=0;
+$('pid').value=new URLSearchParams(location.search).get('project')||'';
+async function api(path,body){const r=await fetch(path,{method:body?'POST':'GET',headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});const j=await r.json();if(!r.ok)throw Error(j.error||r.status);return j}
+function base(){if(!/^[a-f0-9]{32}$/.test($('pid').value.trim()))throw Error('Paste the project ID from FRAME.');return $('pid').value.trim()}
+async function doc(){return api('/api/quick/projects/'+base())}
+async function call(action,body){return api('/api/recipe-apply/'+base()+'/'+action,body)}
+function show(value){
+if(typeof value==='string'){$('status').textContent=value;return}
+const p=value.plan||value;
+$('status').textContent=(value.status?'Status: '+value.status+' · '+value.next+' of '+p.ops.length+' steps saved\n':'Ready to apply\n')+
+'Fixed identity: portrait frame, full footage contained, white English captions.\n'+
+'New content: '+p.words.map(w=>w.w).join(' ')+'\nTiming: '+p.timing+'\n'+
+'Steps: portrait framing → captions mapped to your current cuts.\nPlan reference: '+p.digest.slice(0,12)+
+(value.receipts?'\n'+value.receipts.map(r=>r.op+': '+(r.kept_user_fields.length?'kept your '+r.kept_user_fields.join(', '):'saved at version '+r.version)).join('\n'):'');
+}
+function saved(){localStorage.setItem('frame-recipe-run:'+base(),run.id);$('pause').disabled=run.status!=='running';$('resume').disabled=run.status!=='paused';$('export').disabled=run.status!=='done';$('edits').disabled=run.status!=='paused';show(run)}
+async function loop(){const mine=++epoch;while(run&&run.status==='running'&&mine===epoch){await new Promise(r=>setTimeout(r,1800));if(mine!==epoch||run.status!=='running')break;busy=true;try{const d=await doc();run=await call('step',{run_id:run.id,expected_version:d.version,next:run.next});saved()}catch(e){show(e.message+' Pause and resume to reconcile edits.');break}finally{busy=false}}}
+async function action(fn){try{await fn()}catch(e){show(e.message)}}
+$('review').onclick=()=>action(async()=>{const d=await doc();plan=await call('plan',{expected_version:d.version,script:$('script').value});$('editor').href='/swarm?project='+base();$('preview').src=d.source_url;$('start').disabled=false;show(plan)});
+$('start').onclick=()=>action(async()=>{run=await call('start',{expected_version:plan.base_version,script:$('script').value,digest:plan.digest});$('start').disabled=true;saved();loop()});
+$('pause').onclick=()=>action(async()=>{++epoch;while(busy)await new Promise(r=>setTimeout(r,50));run=await call('pause',{run_id:run.id,expected_version:(await doc()).version});saved()});
+$('resume').onclick=()=>action(async()=>{run=await call('resume',{run_id:run.id,expected_version:(await doc()).version});saved();loop()});
+$('restore').onclick=()=>action(async()=>{const d=await doc();const id=localStorage.getItem('frame-recipe-run:'+base())||(d.recipe_runs||[]).slice(-1)[0]?.id;if(!id)throw Error('No saved run.');run=await call('get',{run_id:id});$('editor').href='/swarm?project='+base();saved();if(run.status==='running'){run=await call('pause',{run_id:id,expected_version:d.version});saved()}});
+$('saveEdit').onclick=()=>action(async()=>{if(!run||run.status!=='paused')throw Error('Pause before editing.');const d=await doc();const clips=JSON.parse(JSON.stringify(d.clips));const trim=Number($('trim').value);if(!Number.isFinite(trim)||trim<0||trim>=clips[0].end-clips[0].start-0.04)throw Error('Trim must leave at least one frame.');clips[0].start+=trim;const studio=Object.assign({},d.studio);const text=$('caption').value.trim();if(text)studio.captions=[{id:'recipe_manual',text,start:0,end:Math.min(2,clips.reduce((a,c)=>a+c.end-c.start,0)),x:.5,y:.8,size:.035,color:'#FFFFFF'}];await api('/api/quick/projects/'+base()+'/commands',{operation:'sync_editor_state',expected_version:d.version,clips,studio,editor_state:null,provider:'recipe-user'});$('trim').value=0;show('Your edit is saved. Resume to continue; agents will keep your caption override.');});
+$('export').onclick=()=>action(async()=>{const pid=base();let d=await doc();d=await api('/api/quick/projects/'+pid+'/commands',{operation:'export_video',expected_version:d.version});const id=d.exports.slice(-1)[0].id;show('Rendering saved cut…');while(true){await new Promise(r=>setTimeout(r,1000));d=await api('/api/quick/projects/'+pid);const e=d.exports.find(x=>x.id===id);if(e.status==='working')continue;if(e.status!=='done')throw Error(e.error||'Export failed');$('download').href=e.url;$('download').hidden=false;$('provenance').href='/api/recipe-apply/'+pid+'/exports/'+id;$('provenance').hidden=false;$('download').download='Frame-New-Story.mp4';$('preview').src=e.url;show('Export complete. '+e.url);break}});
+</script></html>

@@ -1,0 +1,105 @@
+{
+ "format": "inventory/1",
+ "items": [
+  {
+   "role": "brief",
+   "original_path": "https://higgsfield-ai.notion.site/fable-5-2-x-higgsfield-free-unlimited-v1-announcement",
+   "package_path": "sources/brief-captured-2026-11-10.md",
+   "copied": "text captured from rendered page",
+   "evidence_status": "copied from source"
+  },
+  {
+   "role": "reference: hook reaction (brief-embedded)",
+   "name": "visual-hook.mp4",
+   "credit": "@soojintech",
+   "duration_s": 3.45,
+   "video": {
+    "width": 720,
+    "height": 1280
+   },
+   "copied": false,
+   "evidence_status": "viewed in browser (4 frames sampled); not downloaded"
+  },
+  {
+   "role": "reference: category presentation (brief-embedded)",
+   "name": "ref1.mp4",
+   "duration_s": 5.39,
+   "video": {
+    "width": 720,
+    "height": 1280
+   },
+   "copied": false,
+   "evidence_status": "viewed in browser (4 frames sampled); not downloaded"
+  },
+  {
+   "role": "reference: setup walkthrough (brief-embedded)",
+   "name": "claude-setup-mobile-fable.mp4",
+   "duration_s": 9.76,
+   "video": {
+    "width": 1080,
+    "height": 1920
+   },
+   "copied": false,
+   "evidence_status": "viewed in browser (5 frames sampled); not downloaded"
+  },
+  {
+   "role": "media kit (Dropbox 'Video categories')",
+   "original_path": "https://www.dropbox.com/scl/fo/9rkandrfhtnncuxcwwev8/AHMiHyNDyWCt189AH-DF6Dg?rlkey=2op506smgw13n5vi646fy8de7&dl=0",
+   "files": 38,
+   "approx_mb": 830,
+   "listing": "sources/brief-captured-2026-11-10.md#media-kit-listing",
+   "copied": false,
+   "evidence_status": "listing read 2026-11-10; nothing downloaded"
+  },
+  {
+   "role": "reference: finished creator example (supplied by Dante)",
+   "original_path": "/Users/dantegarcia/Library/CloudStorage/GoogleDrive-dante.garcia654@gmail.com/My Drive/95d2b131-792c-4bcf-8eae-134ece864d28.MP4",
+   "bytes": 5456806,
+   "sha256": "525dccbe2953132e7899aafb3e526ae0b3983f22ddbce0708baa116b3790a78a",
+   "duration_s": 31.833,
+   "video": {
+    "codec": "h264",
+    "width": 576,
+    "height": 1024,
+    "fps": "30/1"
+   },
+   "audio_streams": [
+    {
+     "codec": "aac",
+     "sample_rate": "44100",
+     "channels": 2
+    }
+   ],
+   "contact_sheet": "analysis/95d2b131-792c-4bcf-8eae-134ece864d28_sheet.jpg",
+   "copied": false,
+   "logged_at": "2026-11-10T09:33:15",
+   "note": "",
+   "evidence_status": "measured from source file"
+  },
+  {
+   "role": "raw footage: Dante A-roll (only clip)",
+   "original_path": "/Users/dantegarcia/Downloads/D439ECEF-E0F5-405C-911F-2B01CB97AFF7.MP4",
+   "bytes": 49508964,
+   "sha256": "a9710a293d411814502f504fd20736130d31a922d679ad4a0b89944161289684",
+   "duration_s": 41.633,
+   "video": {
+    "codec": "hevc",
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1"
+   },
+   "audio_streams": [
+    {
+     "codec": "aac",
+     "sample_rate": "44100",
+     "channels": 2
+    }
+   ],
+   "contact_sheet": "analysis/D439ECEF-E0F5-405C-911F-2B01CB97AFF7_sheet.jpg",
+   "copied": false,
+   "logged_at": "2026-11-10T09:45:03",
+   "note": "Supplied 2026-11-10 for the first draft",
+   "evidence_status": "measured from source file"
+  }
+ ]
+}
